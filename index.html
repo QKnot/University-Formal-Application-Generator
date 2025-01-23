@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Application Generator</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <div id="loadingSpinner" class="loading-spinner">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-button active" data-tab="details">Application Details</button>
+            <button class="tab-button" data-tab="preview">Preview</button>
+        </div>
+
+        <div class="tab-content active" id="details">
+            <div class="card">
+                <h2>Application Details</h2>
+                
+                <div class="template-section">
+                    <div class="form-group">
+                        <label>Select Template</label>
+                        <select id="template-select">
+                            <option value="">Choose a template</option>
+                            <option value="feeExtension">Fee Extension Request</option>
+                            <option value="leaveAbsence">Leave of Absence</option>
+                            <option value="certificateRequest">Certificate Request</option>
+                            <option value="registrationExtension">Registration Extension Request</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" id="date" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Designation</label>
+                    <select id="designation" required>
+                        <option value="">Select Designation</option>
+                        <option value="The Dean">The Dean</option>
+                        <option value="The Head of Department">The Head of Department</option>
+                        <option value="The Registrar">The Registrar</option>
+                        <option value="The Controller of Examinations">The Controller of Examinations</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>University Name</label>
+                    <select id="universityName" required>
+                        <option value="">Select University</option>
+                        <option value="Northern University of Business and Technology Khulna">Northern University of Business and Technology Khulna</option>
+                        <option value="Khulna University">Khulna University</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Department/Office (Optional)</label>
+                    <input type="text" id="department">
+                </div>
+
+                <div class="form-group">
+                    <label>Subject</label>
+                    <input type="text" id="subject" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Recipient Gender</label>
+                    <select id="gender" required>
+                        <option value="Sir">Male</option>
+                        <option value="Madam">Female</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <div class="section-label">Introduction</div>
+                    <textarea id="introduction" placeholder="Briefly introduce yourself and state your purpose" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <div class="section-label">Description of Request</div>
+                    <textarea id="description" placeholder="Describe what you are requesting" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <div class="section-label">Reason for Request</div>
+                    <textarea id="reason" placeholder="Explain why this request is necessary" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <div class="section-label">Supporting Details</div>
+                    <textarea id="details" placeholder="Add any additional information or context (optional)"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <div class="section-label">Closing Statement</div>
+                    <textarea id="closing" placeholder="Conclude your application politely" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="studentName" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Student ID</label>
+                    <input type="text" id="studentId" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Section</label>
+                    <input type="text" id="studentSection" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Department</label>
+                    <select id="studentDepartment" required>
+                        <option value="">Select Department</option>
+                        <option value="Computer Science and Engineering">Computer Science and Engineering</option>
+                        <option value="Electrical and Electronic Engineering">Electrical and Electronic Engineering</option>
+                        <option value="Mechanical Engineering">Mechanical Engineering</option>
+                        <option value="Civil Engineering">Civil Engineering</option>
+                        <option value="Law">Law</option>
+                        <option value="English">English</option>
+                        <option value="Business Administration">Business Administration</option>    
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Contact Information (Optional)</label>
+                    <input type="text" id="contactInfo" placeholder="Email or Phone Number">
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="preview">
+            <div class="card">
+                <div class="preview-header">
+                    <h2>Preview</h2>
+                    <button class="download-btn" onclick="generatePDF()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Download PDF
+                    </button>
+                </div>
+                
+                <div class="preview-content">
+                    <div id="preview-date" class="mb-4"></div>
+                    <div id="preview-recipient" class="mb-4"></div>
+                    <div id="preview-subject" class="mb-4"></div>
+                    <div id="preview-salutation" class="mb-4"></div>
+                    <div id="preview-body" class="mb-4"></div>
+                    <div id="preview-signature" class="mt-8"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
