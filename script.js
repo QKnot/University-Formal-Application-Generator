@@ -1,38 +1,21 @@
 // constants.js
-const TEMPLATES = {
-    registrationExtension: {
-        subject: 'Application for Semester Registration Payment Extension and Penalty Waiver.',
-        introduction: 'I hope this letter finds you in good health. I am writing to kindly request an extension of time to pay the required 40% of the semester registration fees.',
-        description: 'I already paid some of my total registration fees. Unfortunately, due to some recent family issues and financial difficulties, I am currently unable to make the full payment within the given timeframe.',
-        reason: 'I fully understand the importance of meeting my financial obligations, and I am actively working towards resolving the situation.',
-        details: 'I respectfully request that I be granted some additional time to complete the payment without incurring any penalties.',
-        closing: 'I would be extremely grateful if my request could be considered and I am allowed to proceed with registration without any penalties. Thank you for your understanding and support during this challenging time.'
-    },
-    feeExtension: { 
-        subject: 'Application for Semester Fee Extension',
-        introduction: 'I am writing this application to request an extension for my semester fee payment.',
-        description: 'I am requesting a two-week extension for paying my current semester fees.',
-        reason: 'Due to unexpected financial circumstances, I require additional time to arrange the payment.',
-        details: 'I have always maintained a good payment record in previous semesters.',
-        closing: 'I would be grateful if my request for fee extension could be considered. I assure you that I will make the payment within the extended timeline.'
-    },
-    leaveAbsence: {
-        subject: 'Application for Leave of Absence',
-        introduction: 'I am writing to request a leave of absence from classes.',
-        description: 'I need to take leave for three days, from [start date] to [end date].',
-        reason: 'I have a family emergency that requires my immediate attention.',
-        details: 'I will ensure to catch up with any missed classes and assignments upon my return.',
-        closing: 'I would appreciate your understanding and approval of my leave request.'
-    },
-    certificateRequest: {
-        subject: 'Request for Academic Transcript',
-        introduction: 'I am writing to request my academic transcript.',
-        description: 'I need an official copy of my academic transcript for further studies application.',
-        reason: 'The transcript is required for my graduate school application process.',
-        details: 'I need both digital and physical copies of the transcript.',
-        closing: 'I would appreciate if you could process my request at your earliest convenience.'
+// Fetch templates from JSON file
+let TEMPLATES = {};
+
+async function loadTemplates() {
+    try {
+        const response = await fetch('templates.json');
+        if (!response.ok) {
+            throw new Error('Failed to load templates');
+        }
+        TEMPLATES = await response.json();
+    } catch (error) {
+        console.error('Error loading templates:', error);
     }
-};
+}
+
+// Load templates when the script starts
+loadTemplates();
 
 // utils.js
 class FormUtils {
@@ -63,8 +46,47 @@ class FormUtils {
             studentId: document.getElementById('studentId').value,
             studentSection: document.getElementById('studentSection').value,
             studentDepartment: document.getElementById('studentDepartment').value,
+            studentUniversityName: document.getElementById('studentUniversityName').value,
             contactInfo: document.getElementById('contactInfo').value
         };
+    }
+
+    static validateRequiredFields() {
+        const requiredFields = [
+            'date',
+            'designation', 
+            'universityName',
+            'subject',
+            'gender',
+            'introduction',
+            'description',
+            'reason',
+            'closing',
+            'studentName',
+            'studentId',
+            'studentDepartment',
+            'studentUniversityName'
+        ];
+
+        let isValid = true;
+        let emptyFields = [];
+
+        requiredFields.forEach(field => {
+            const element = document.getElementById(field);
+            if (!element.value.trim()) {
+                isValid = false;
+                emptyFields.push(field.replace(/([A-Z])/g, ' $1').toLowerCase());
+                element.classList.add('error');
+            } else {
+                element.classList.remove('error');
+            }
+        });
+
+        if (!isValid) {
+            alert(`Please fill in all required fields:\n${emptyFields.join('\n')}`);
+        }
+
+        return isValid;
     }
 }
 
@@ -76,7 +98,7 @@ class PreviewManager {
 
     updatePreview() {
         const formData = FormUtils.getFormData();        
-        document.getElementById('preview-date').textContent = formData.date;
+        document.getElementById('preview-date').innerHTML = `<strong>${formData.date}</strong>`;
         document.getElementById('preview-recipient').innerHTML = this.generateRecipientHTML(formData);
         document.getElementById('preview-subject').innerHTML = `<strong>Subject: ${formData.subject}</strong>`;
         document.getElementById('preview-salutation').textContent = `Dear ${formData.gender},`;
@@ -108,8 +130,9 @@ class PreviewManager {
             Yours sincerely,<br><br>
             ${formData.studentName}<br>
             ID: ${formData.studentId}<br>
-            Section: ${formData.studentSection}<br>
-            Department: ${formData.studentDepartment}<br>
+            ${formData.studentSection ? `Section: ${formData.studentSection}<br>` : ''}
+            Department of ${formData.studentDepartment}<br>
+            ${formData.studentUniversityName}<br>
             ${formData.contactInfo ? formData.contactInfo : ''}
         `;
     }
@@ -122,6 +145,10 @@ class PDFGenerator {
     }
 
     async generatePDF() {
+        if (!FormUtils.validateRequiredFields()) {
+            return;
+        }
+
         this.showSpinner();
         
         try {
@@ -160,7 +187,7 @@ class PDFGenerator {
 
     async generateCanvas(clone) {
         const options = {
-            scale: 1.5,
+            scale: 2,
             useCORS: true,
             logging: false,
             width: clone.offsetWidth,
@@ -168,8 +195,7 @@ class PDFGenerator {
             windowWidth: clone.offsetWidth,
             windowHeight: clone.offsetHeight,
             imageTimeout: 0,
-            removeContainer: true,
-            letterRendering: true
+            backgroundColor: '#ffffff'
         };
 
         return await html2canvas(clone, options);
@@ -181,39 +207,27 @@ class PDFGenerator {
             orientation: 'portrait',
             unit: 'mm',
             format: 'a4',
-            compress: false,
-            precision: 32 // Increased precision for sharper rendering
+            compress: true
         });
 
-        // Increase canvas scale for much higher resolution
-        const scale = 4; // Increased scale factor
+        const scale = 2;
         const scaledCanvas = document.createElement('canvas');
         scaledCanvas.width = canvas.width * scale;
         scaledCanvas.height = canvas.height * scale;
         const ctx = scaledCanvas.getContext('2d');
         
-        // Enable image smoothing for better quality
-        ctx.imageSmoothingEnabled = true;
-        ctx.imageSmoothingQuality = 'high';
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, scaledCanvas.width, scaledCanvas.height);
         
         ctx.scale(scale, scale);
         ctx.drawImage(canvas, 0, 0);
 
-        const imgWidth = 210; // A4 width in mm
+        const imgWidth = 210;
         const imgHeight = (scaledCanvas.height * imgWidth) / scaledCanvas.width;
         
-        // Convert to high quality PNG
-        const imgData = scaledCanvas.toDataURL('image/png', 1.0);
+        const imgData = scaledCanvas.toDataURL('image/jpeg', 0.8);
         
-        // Add image with highest quality settings
-        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight, undefined, 'FAST');
-        
-        // Apply PDF compression optimization
-        pdf.setProperties({
-            title: 'Application',
-            creator: 'Application Generator',
-            compress: true
-        });
+        pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
         
         pdf.save(`application_${new Date().toISOString().slice(0,10)}.pdf`);
     }
