@@ -26,6 +26,155 @@ window.generatePDF = async function() {
     await pdfGenerator.generatePDF();
 };
 
+async function updateStudentData() {
+    // Get form values and validate required fields
+    const studentId = document.getElementById('studentId')?.value?.trim();
+    const password = document.getElementById('studentPassword')?.value?.trim();
+
+    if (!studentId || !password) {
+        alert('Student ID and password are required');
+        return;
+    }
+
+    // Create complete student data object with all fields
+    const studentData = {
+        student_id: studentId,
+        password: password,
+        full_name: document.getElementById('studentName')?.value?.trim() || '',
+        section: document.getElementById('studentSection')?.value?.trim() || '',
+        department: document.getElementById('studentDepartment')?.value?.trim() || '',
+        university_name: document.getElementById('studentUniversityName')?.value?.trim() || '',
+        contact_info: document.getElementById('contactInfo')?.value?.trim() || ''
+    };
+
+    // Validate required fields
+    if (!studentData.full_name || !studentData.department || !studentData.university_name) {
+        alert('Name, Department, and University Name are required fields');
+        return;
+    }
+
+    try {
+        // Show loading state
+        const updateButton = document.getElementById('updateDbButton');
+        if (updateButton) {
+            updateButton.disabled = true;
+            updateButton.textContent = 'Updating...';
+        }
+
+        // Check if student exists
+        const { data: existingStudent, error: fetchError } = await supabaseClient
+            .from('students')
+            .select('*')
+            .eq('student_id', studentId)
+            .maybeSingle();
+
+        if (fetchError) {
+            throw fetchError;
+        }
+
+        let result;
+        
+        if (existingStudent) {
+            // Update existing student
+            if (existingStudent.password === password) {
+                const { data, error } = await supabaseClient
+                    .from('students')
+                    .update({
+                        full_name: studentData.full_name,
+                        section: studentData.section,
+                        department: studentData.department,
+                        university_name: studentData.university_name,
+                        contact_info: studentData.contact_info
+                    })
+                    .eq('student_id', studentId)
+                    .select();
+                
+                if (error) throw error;
+                result = data;
+            } else {
+                throw new Error('Incorrect password');
+            }
+        } else {
+            // Insert new student
+            const { data, error } = await supabaseClient
+                .from('students')
+                .insert([studentData])
+                .select();
+            
+            if (error) throw error;
+            result = data;
+        }
+
+        alert(existingStudent ? 'Student information updated successfully!' : 'New student record created successfully!');
+        
+        // Refresh the displayed data
+        await fetchStudentData(studentId);
+
+    } catch (error) {
+        console.error('Error updating student data:', error);
+        
+        if (error.message === 'Incorrect password') {
+            alert('Incorrect password. Please try again.');
+        } else if (error.code === '23505') {
+            alert('A student with this ID already exists.');
+        } else if (error.code === 'PGRST116') {
+            alert('Student not found.');
+        } else {
+            alert(`Error updating database: ${error.message}`);
+        }
+    } finally {
+        // Reset button state
+        const updateButton = document.getElementById('updateDbButton');
+        if (updateButton) {
+            updateButton.disabled = false;
+            updateButton.textContent = 'Update Database';
+        }
+    }
+}
+
+// Updated fetch function to properly handle all fields
+async function fetchStudentData(studentId) {
+    try {
+        const { data, error } = await supabaseClient
+            .from('students')
+            .select('*')
+            .eq('student_id', studentId)
+            .maybeSingle();
+
+        if (error) throw error;
+
+        if (data) {
+            // Update all form fields with fetched data
+            const fields = {
+                'studentName': data.full_name,
+                'studentSection': data.section,
+                'studentDepartment': data.department,
+                'studentUniversityName': data.university_name,
+                'contactInfo': data.contact_info
+            };
+
+            for (const [id, value] of Object.entries(fields)) {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.value = value || ''; // Handle null/undefined values
+                }
+            }
+        } else {
+            // Clear all form fields if no student found
+            const fields = ['studentName', 'studentSection', 'studentDepartment', 'studentUniversityName', 'contactInfo'];
+            fields.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.value = '';
+                }
+            });
+        }
+    } catch (error) {
+        console.error('Error fetching student data:', error);
+        alert(`Error fetching student data: ${error.message}`);
+    }
+}
+
 class FormUtils {
     static formatDate(dateString) {
         if (!dateString) return '';
@@ -282,6 +431,14 @@ class ApplicationManager {
         this.previewManager = new PreviewManager();
         this.pdfGenerator = new PDFGenerator();
         this.initializeEventListeners();
+        this.initializeUpdateButton();
+    }
+
+    initializeUpdateButton() {
+        const updateBtn = document.getElementById('updateDbButton');
+        if (updateBtn) {
+            updateBtn.addEventListener('click', updateStudentData);
+        }
     }
 
     initializeEventListeners() {
@@ -376,34 +533,3 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('Error initializing application:', error);
     }
 });
-
-async function fetchStudentData(studentId) {
-    try {
-        const { data, error } = await supabaseClient
-            .from('students')
-            .select('*')
-            .eq('student_id', studentId)
-            .single();
-
-        if (error) throw error;
-
-        if (data) {
-            const fields = {
-                'studentName': data.full_name,
-                'studentSection': data.section,
-                'studentDepartment': data.department,
-                'studentUniversityName': data.university_name,
-                'contactInfo': data.contact_info
-            };
-
-            for (const [id, value] of Object.entries(fields)) {
-                const element = document.getElementById(id);
-                if (element) {
-                    element.value = value;
-                }
-            }
-        }
-    } catch (error) {
-        console.error('Error fetching student data:', error);
-    }
-}
