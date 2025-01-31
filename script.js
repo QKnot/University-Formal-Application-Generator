@@ -1,5 +1,5 @@
-// constants.js
-// Fetch templates from JSON file
+const { createClient } = window.supabase; // Use the CDN-loaded version instead of ES module
+
 let TEMPLATES = {};
 
 async function loadTemplates() {
@@ -14,10 +14,18 @@ async function loadTemplates() {
     }
 }
 
-// Load templates when the script starts
-loadTemplates();
+// Initialize Supabase client outside any function
+const supabaseClient = createClient(
+    'https://wcekcagojgvgkfhbgnfy.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndjZWtjYWdvamd2Z2tmaGJnbmZ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgyOTA0MTAsImV4cCI6MjA1Mzg2NjQxMH0.hryXIl30caQ_ILCv1iwyjRcRWpJXjJXeVk1e8xRbVrg'
+);
 
-// utils.js
+// Add window.generatePDF function for the download button
+window.generatePDF = async function() {
+    const pdfGenerator = new PDFGenerator();
+    await pdfGenerator.generatePDF();
+};
+
 class FormUtils {
     static formatDate(dateString) {
         if (!dateString) return '';
@@ -30,25 +38,26 @@ class FormUtils {
     }
 
     static getFormData() {
-        return {
-            date: this.formatDate(document.getElementById('date').value),
-            designation: document.getElementById('designation').value,
-            universityName: document.getElementById('universityName').value,
-            department: document.getElementById('department').value,
-            subject: document.getElementById('subject').value,
-            gender: document.getElementById('gender').value,
-            introduction: document.getElementById('introduction').value,
-            description: document.getElementById('description').value,
-            reason: document.getElementById('reason').value,
-            details: document.getElementById('details').value,
-            closing: document.getElementById('closing').value,
-            studentName: document.getElementById('studentName').value,
-            studentId: document.getElementById('studentId').value,
-            studentSection: document.getElementById('studentSection').value,
-            studentDepartment: document.getElementById('studentDepartment').value,
-            studentUniversityName: document.getElementById('studentUniversityName').value,
-            contactInfo: document.getElementById('contactInfo').value
-        };
+        const formData = {};
+        const fields = [
+            'date', 'designation', 'universityName', 'department', 'subject',
+            'gender', 'introduction', 'description', 'reason', 'details',
+            'closing', 'studentName', 'studentId', 'studentSection',
+            'studentDepartment', 'studentUniversityName', 'contactInfo'
+        ];
+
+        fields.forEach(field => {
+            const element = document.getElementById(field);
+            if (element) {
+                formData[field] = element.value;
+            }
+        });
+
+        if (formData.date) {
+            formData.date = this.formatDate(formData.date);
+        }
+
+        return formData;
     }
 
     static validateRequiredFields() {
@@ -73,6 +82,11 @@ class FormUtils {
 
         requiredFields.forEach(field => {
             const element = document.getElementById(field);
+            if (!element) {
+                console.error(`Element with id '${field}' not found`);
+                isValid = false;
+                return;
+            }
             if (!element.value.trim()) {
                 isValid = false;
                 emptyFields.push(field.replace(/([A-Z])/g, ' $1').toLowerCase());
@@ -90,20 +104,28 @@ class FormUtils {
     }
 }
 
-// preview.js
 class PreviewManager {
     constructor() {
         this.previewContent = document.querySelector('.preview-content');
     }
 
     updatePreview() {
-        const formData = FormUtils.getFormData();        
-        document.getElementById('preview-date').innerHTML = `<strong>${formData.date}</strong>`;
-        document.getElementById('preview-recipient').innerHTML = this.generateRecipientHTML(formData);
-        document.getElementById('preview-subject').innerHTML = `<strong>Subject: ${formData.subject}</strong>`;
-        document.getElementById('preview-salutation').textContent = `Dear ${formData.gender},`;
-        document.getElementById('preview-body').innerHTML = this.generateBodyHTML(formData);
-        document.getElementById('preview-signature').innerHTML = this.generateSignatureHTML(formData);
+        const formData = FormUtils.getFormData();
+        
+        // Update preview sections
+        this.updateElement('preview-date', `<strong>${formData.date || ''}</strong>`);
+        this.updateElement('preview-recipient', this.generateRecipientHTML(formData));
+        this.updateElement('preview-subject', `<strong>Subject: ${formData.subject || ''}</strong>`);
+        this.updateElement('preview-salutation', `Dear ${formData.gender || ''},`);
+        this.updateElement('preview-body', this.generateBodyHTML(formData));
+        this.updateElement('preview-signature', this.generateSignatureHTML(formData));
+    }
+
+    updateElement(id, content) {
+        const element = document.getElementById(id);
+        if (element) {
+            element.innerHTML = content;
+        }
     }
 
     generateRecipientHTML(formData) {
@@ -138,10 +160,12 @@ class PreviewManager {
     }
 }
 
-// pdfGenerator.js
 class PDFGenerator {
     constructor() {
         this.spinner = document.getElementById('loadingSpinner');
+        if (!this.spinner) {
+            console.error('Loading spinner element not found');
+        }
     }
 
     async generatePDF() {
@@ -153,6 +177,10 @@ class PDFGenerator {
         
         try {
             const content = document.querySelector('.preview-content');
+            if (!content) {
+                throw new Error('Preview content element not found');
+            }
+
             const clone = this.createContentClone(content);
             const canvas = await this.generateCanvas(clone);
             document.body.removeChild(clone);
@@ -202,6 +230,10 @@ class PDFGenerator {
     }
 
     async createAndSavePDF(canvas) {
+        if (!window.jspdf) {
+            throw new Error('jsPDF library not loaded');
+        }
+
         const { jsPDF } = window.jspdf;
         const pdf = new jsPDF({
             orientation: 'portrait',
@@ -233,15 +265,18 @@ class PDFGenerator {
     }
 
     showSpinner() {
-        this.spinner.style.display = 'flex';
+        if (this.spinner) {
+            this.spinner.style.display = 'flex';
+        }
     }
 
     hideSpinner() {
-        this.spinner.style.display = 'none';
+        if (this.spinner) {
+            this.spinner.style.display = 'none';
+        }
     }
 }
 
-// app.js
 class ApplicationManager {
     constructor() {
         this.previewManager = new PreviewManager();
@@ -250,51 +285,125 @@ class ApplicationManager {
     }
 
     initializeEventListeners() {
-        // Template selection
-        document.getElementById('template-select').addEventListener('change', (e) => {
-            if (TEMPLATES[e.target.value]) {
-                this.populateTemplate(TEMPLATES[e.target.value]);
+        try {
+            // Template selection
+            const templateSelect = document.getElementById('template-select');
+            if (templateSelect) {
+                templateSelect.addEventListener('change', (e) => {
+                    if (TEMPLATES[e.target.value]) {
+                        this.populateTemplate(TEMPLATES[e.target.value]);
+                    }
+                });
             }
-        });
 
-        // Tab switching
-        document.querySelectorAll('.tab-button').forEach(button => {
-            button.addEventListener('click', () => this.handleTabSwitch(button));
-        });
+            // Tab switching
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.addEventListener('click', () => this.handleTabSwitch(button));
+            });
 
-        // Form updates
-        document.querySelectorAll('input, textarea, select').forEach(element => {
-            element.addEventListener('input', () => this.previewManager.updatePreview());
-        });
+            // Form updates
+            document.querySelectorAll('input, textarea, select').forEach(element => {
+                element.addEventListener('input', () => this.previewManager.updatePreview());
+            });
 
-        // PDF generation
-        document.querySelector('.download-btn').addEventListener('click', () => {
-            this.pdfGenerator.generatePDF();
-        });
+            // PDF generation
+            const downloadBtn = document.querySelector('.download-btn');
+            if (downloadBtn) {
+                downloadBtn.addEventListener('click', () => {
+                    this.pdfGenerator.generatePDF();
+                });
+            }
+        } catch (error) {
+            console.error('Error initializing event listeners:', error);
+        }
     }
 
     populateTemplate(template) {
-        const fields = ['subject', 'introduction', 'description', 'reason', 'details', 'closing'];
-        fields.forEach(field => {
-            document.getElementById(field).value = template[field];
-        });
-        this.previewManager.updatePreview();
+        try {
+            const fields = ['subject', 'introduction', 'description', 'reason', 'details', 'closing'];
+            fields.forEach(field => {
+                const element = document.getElementById(field);
+                if (element) {
+                    element.value = template[field];
+                }
+            });
+            this.previewManager.updatePreview();
+        } catch (error) {
+            console.error('Error populating template:', error);
+        }
     }
 
     handleTabSwitch(button) {
-        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-        
-        button.classList.add('active');
-        document.getElementById(button.dataset.tab).classList.add('active');
-        
-        if (button.dataset.tab === 'preview') {
-            this.previewManager.updatePreview();
+        try {
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            button.classList.add('active');
+            const tabContent = document.getElementById(button.dataset.tab);
+            if (tabContent) {
+                tabContent.classList.add('active');
+            }
+            
+            if (button.dataset.tab === 'preview') {
+                this.previewManager.updatePreview();
+            }
+        } catch (error) {
+            console.error('Error handling tab switch:', error);
         }
     }
 }
 
 // Initialize application
-document.addEventListener('DOMContentLoaded', () => {
-    new ApplicationManager();
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        // Load templates first
+        await loadTemplates();
+        
+        // Initialize the application manager
+        const app = new ApplicationManager();
+        
+        // Add event listener for student ID input
+        const studentIdInput = document.getElementById('studentId');
+        if (studentIdInput) {
+            studentIdInput.addEventListener('input', (e) => {
+                const studentId = e.target.value;
+                if (studentId.length >= 5) {
+                    fetchStudentData(studentId);
+                }
+            });
+        }
+    } catch (error) {
+        console.error('Error initializing application:', error);
+    }
 });
+
+async function fetchStudentData(studentId) {
+    try {
+        const { data, error } = await supabaseClient
+            .from('students')
+            .select('*')
+            .eq('student_id', studentId)
+            .single();
+
+        if (error) throw error;
+
+        if (data) {
+            const fields = {
+                'studentName': data.full_name,
+                'studentSection': data.section,
+                'studentDepartment': data.department,
+                'studentUniversityName': data.university_name,
+                'contactInfo': data.contact_info
+            };
+
+            for (const [id, value] of Object.entries(fields)) {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.value = value;
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Error fetching student data:', error);
+    }
+}
