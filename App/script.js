@@ -441,7 +441,7 @@ class PreviewManager {
             ${formData.studentName}<br>
             ID: ${formData.studentId}<br>
             ${formData.studentSection ? `Section: ${formData.studentSection}<br>` : ''}
-            Department of ${formData.studentDepartment}<br>
+            ${formData.studentDepartment}<br>
             ${formData.studentUniversityName}<br>
             ${formData.contactInfo ? formData.contactInfo : ''}
         `;
