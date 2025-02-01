@@ -4,13 +4,135 @@ let TEMPLATES = {};
 
 async function loadTemplates() {
     try {
-        const response = await fetch('templates.json');
+        const response = await fetch('jsonData/templates.json');
         if (!response.ok) {
             throw new Error('Failed to load templates');
         }
         TEMPLATES = await response.json();
     } catch (error) {
         console.error('Error loading templates:', error);
+    }
+}
+
+// Load universities into select dropdown
+async function loadUniversities() {
+    try {
+        const response = await fetch('jsonData/universities.json');
+        if (!response.ok) {
+            throw new Error('Failed to load universities');
+        }
+        const data = await response.json();
+        const dataList = document.getElementById('university-list');
+        if (!dataList) {
+            throw new Error('Could not find university-list element');
+        }
+        // Clear existing options
+        dataList.innerHTML = '';
+        // Add new options
+        data.forEach(university => {
+            const option = document.createElement('option');
+            option.value = university.name;
+            dataList.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Error loading universities:', error);
+    }
+}
+// Load student universities into datalist
+async function loadStudentUniversities() {
+    try {
+        const response = await fetch('jsonData/universities.json');
+        if (!response.ok) {
+            throw new Error('Failed to load student universities');
+        }
+        const data = await response.json();
+        const dataList = document.getElementById('student-university-list');
+        if (!dataList) {
+            throw new Error('Could not find student-university-list element');
+        }
+        // Clear existing options
+        dataList.innerHTML = '';
+        // Add new options
+        data.forEach(university => {
+            const option = document.createElement('option');
+            option.value = university.name;
+            dataList.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Error loading student universities:', error);
+    }
+}
+// Load student departments into datalist
+async function loadStudentDepartments() {
+    try {
+        const response = await fetch('jsonData/departments.json');
+        if (!response.ok) {
+            throw new Error('Failed to load student departments');
+        }
+        const data = await response.json();
+        const dataList = document.getElementById('department-list');
+        if (!dataList) {
+            throw new Error('Could not find department-list element');
+        }
+        // Clear existing options
+        dataList.innerHTML = '';
+        // Add new options
+        data.departments.forEach(dept => {
+            const option = document.createElement('option');
+            option.value = dept;
+            dataList.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Error loading student departments:', error);
+    }
+}
+
+
+async function loadTeacherDesignation() {
+    try {
+        const response = await fetch('jsonData/designation.json');
+        if (!response.ok) {
+            throw new Error('Failed to load teacher designation');
+        }
+        const data = await response.json();
+        const dataList = document.getElementById('designation-list');
+        if (!dataList) {
+            throw new Error('Could not find designation-list element');
+        }
+        // Clear existing options
+        dataList.innerHTML = '';
+        // Add new options
+        data.forEach(designation => {
+            const option = document.createElement('option');
+            option.value = designation.name;
+            dataList.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Error loading teacher designation:', error);
+    }
+}
+// Load departments into datalist
+async function loadDepartments() {
+    try {
+        const response = await fetch('jsonData/departments.json');
+        if (!response.ok) {
+            throw new Error('Failed to load departments');
+        }
+        const data = await response.json();
+        const dataList = document.getElementById('department-list');
+        if (!dataList) {
+            throw new Error('Could not find department-list element');
+        }
+        // Clear existing options
+        dataList.innerHTML = '';
+        // Add new options
+        data.departments.forEach(dept => {
+            const option = document.createElement('option');
+            option.value = dept;
+            dataList.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Error loading departments:', error);
     }
 }
 
@@ -186,6 +308,18 @@ class FormUtils {
         });
     }
 
+    static countBodyWords() {
+        const bodyFields = ['date', 'designation', 'universityName', 'department', 'subject', 'gender', 'introduction', 'description', 'reason', 'details', 'closing', 'studentName', 'studentId', 'studentSection', 'studentDepartment', 'studentUniversityName', 'contactInfo'];
+        let totalWords = 0;
+
+        bodyFields.forEach(field => {
+            const text = document.getElementById(field).value.trim();
+            totalWords += text ? text.split(/\s+/).length : 0;
+        });
+
+        return totalWords;
+    }
+
     static getFormData() {
         const formData = {};
         const fields = [
@@ -260,6 +394,11 @@ class PreviewManager {
 
     updatePreview() {
         const formData = FormUtils.getFormData();
+        
+        // Update word count display
+        const wordCount = FormUtils.countBodyWords();
+        this.updateElement('preview-word-count', 
+            `Word Count: ${wordCount} words (${Math.round(wordCount/250*100)}% of typical page)`);
         
         // Update preview sections
         this.updateElement('preview-date', `<strong>${formData.date || ''}</strong>`);
@@ -513,8 +652,15 @@ class ApplicationManager {
 // Initialize application
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        // Load templates first
-        await loadTemplates();
+        // Load all data
+        await Promise.all([
+            loadTemplates(),
+            loadUniversities(),
+            loadTeacherDesignation(),
+            loadDepartments(),
+            loadStudentUniversities(),
+            loadStudentDepartments()
+        ]);
         
         // Initialize the application manager
         const app = new ApplicationManager();

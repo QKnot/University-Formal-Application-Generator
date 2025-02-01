@@ -259,3 +259,11 @@ h2 {
     color: #9ca3af;
     font-size: 0.9rem;
 }
+.word-count {
+    font-size: 0.9rem;
+    color: #666;
+    margin-right: 1rem;
+    padding: 0.25rem 0.5rem;
+    background: #f3f4f6;
+    border-radius: 0.25rem;
+}

@@ -6,5 +6,14 @@
         "reason": "I fully understand the importance of meeting my financial obligations, and I am actively working towards resolving the situation.",
         "details": "I respectfully request that I be granted some additional time to complete the payment without incurring any penalties.",
         "closing": "I would be extremely grateful if my request could be considered and I am allowed to proceed with registration without any penalties. Thank you for your understanding and support during this challenging time."
+    },
+    "leaveRequest": {
+        "subject": "Application for Leave of Absence.",
+        "introduction": "I hope this message finds you well.",
+        "description": "I am writing to formally request a leave of absence.",
+        "reason": "I am requesting a leave of absence due to [state the reason].",
+        "details": "I anticipate that my leave will begin on [start date] and will last until [end date], pending your approval. I have attached any necessary documentation to support my request. Please let me know if you require any further information or paperwork to process my application.",
+        "closing": "I sincerely appreciate your understanding and support during this time. I look forward to your positive response."
     }
 }
+

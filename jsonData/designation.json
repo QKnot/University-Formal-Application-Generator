@@ -1,0 +1,16 @@
+[
+    { "name": "The Dean" },
+    { "name": "The Director" },
+    { "name": "The Chairman" },
+    { "name": "The Head of Department" },
+    { "name": "The Registrar" },
+    { "name": "The Controller of Examinations" },
+    { "name": "The Proctor" },
+    { "name": "The Provost" },
+    { "name": "The Professor" },
+    { "name": "The Course Instructor" },
+    { "name": "The Assistant Professor" },
+    { "name": "The Coordinator" },
+    { "name": "The Assistant Registrar" },
+    { "name": "The Assistant Proctor" }
+]

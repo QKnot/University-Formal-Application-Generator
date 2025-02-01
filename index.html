@@ -34,6 +34,7 @@
                         <select id="template-select">
                             <option value="">Choose a template</option>
                             <option value="registrationExtension">Registration Extension Request</option>
+                            <option value="leaveRequest">Leave of Absence</option>
                         </select>
                     </div>
                 </div>
@@ -45,47 +46,22 @@
 
                 <div class="form-group">
                     <label>Recipient Designation</label>
-                    <select id="designation" required>
-                        <option value="">Select Designation</option>
-                        <option value="The Dean">The Dean</option>
-                        <option value="The Head of Department">The Head of Department</option>
-                        <option value="The Registrar">The Registrar</option>
-                        <option value="The Controller of Examinations">The Controller of Examinations</option>
-                        <option value="The Proctor">The Proctor</option>
-                        <option value="The Director">The Director</option>
-                        <option value="The Chairman">The Chairman</option>
-                        <option value="The Coordinator">The Coordinator</option>
-                        <option value="The Provost">The Provost</option>
-                        <option value="The Assistant Proctor">The Assistant Proctor</option>
-                        <option value="The Assistant Registrar">The Assistant Registrar</option>
-                    </select>
+                    <input type="text" id="designation" placeholder="Enter recipient designation" list="designation-list" required>
+                    <datalist id="designation-list"></datalist>
                 </div>
-
+                
                 <div class="form-group">
                     <label>Recipient University Name</label>
-                    <select id="universityName" required>
-                        <option value="">Select University</option>
-                        <option value="Northern University of Business and Technology Khulna">Northern University of Business and Technology Khulna</option>
-                        <option value="Khulna University">Khulna University</option>
-                    </select>
+                    <input type="text" id="universityName" placeholder="Enter recipient university name" list="university-list" required>
+                    <datalist id="university-list"></datalist>
                 </div>
 
                 <div class="form-group">
                     <label>Department/Office (Optional)</label>
-                    <input type="text" id="department" placeholder="Enter recipient department/office" list="department-list" demo-data="Department of Computer Science and Engineering">
-                    <datalist id="department-list">
-                        <option value="Department of Computer Science and Engineering">Department of Computer Science and Engineering</option>
-                        <option value="Department of Business Administration">Department of Business Administration</option>
-                        <option value="Department of English">Department of English</option>
-                        <option value="Department of Law">Department of Law</option>
-                        <option value="Department of Economics">Department of Economics</option>
-                        <option value="Department of Electrical and Electronic Engineering">Department of Electrical and Electronic Engineering</option>
-                        <option value="Department of Civil Engineering">Department of Civil Engineering</option>
-                        <option value="Department of Mathematics">Department of Mathematics</option>
-                        <option value="Department of Physics">Department of Physics</option>
-                        <option value="Department of Chemistry">Department of Chemistry</option>
-                    </datalist>
+                    <input type="text" id="department" placeholder="Enter recipient department/office" list="department-list">
+                    <datalist id="department-list"></datalist>
                 </div>
+                
                 <div class="form-group">
                     <label>Subject</label>
                     <input type="text" id="subject" placeholder="Enter subject" demo-data="Application for Semester Registration Payment Extension and Penalty Waiver." required>
@@ -146,35 +122,29 @@
             
                 <div class="form-group">
                     <label>Student Department</label>
-                    <select id="studentDepartment" required>
-                        <option value="">Select Department</option>
-                        <option value="Computer Science and Engineering">Computer Science and Engineering</option>
-                        <option value="Electrical and Electronic Engineering">Electrical and Electronic Engineering</option>
-                        <option value="Mechanical Engineering">Mechanical Engineering</option>
-                        <option value="Civil Engineering">Civil Engineering</option>
-                        <option value="Law">Law</option>
-                        <option value="English">English</option>
-                        <option value="Business Administration">Business Administration</option>    
-                    </select>
+                    <input type="text" id="studentDepartment" placeholder="Enter student department" list="department-list" required>
+                    <datalist id="department-list"></datalist>
                 </div>
+
                 <div class="form-group">
                     <label>Student University Name</label>
-                    <select id="studentUniversityName" required>
-                        <option value="">Select University</option>
-                        <option value="Northern University of Business and Technology Khulna">Northern University of Business and Technology Khulna</option>
-                        <option value="Khulna University">Khulna University</option>
-                    </select>
+                    <input type="text" id="studentUniversityName" placeholder="Enter student university name" list="student-university-list" required>
+                    <datalist id="student-university-list"></datalist>
                 </div>
+
                 <div class="form-group">
                     <label>Student Contact Information (Optional)</label>
                     <input type="text" id="contactInfo" placeholder="Email or Phone Number" demo-data="john.doe@example.com">
                     <datalist id="contactInfo-list"></datalist>
                 </div>
+
                 <div class="form-group">
                     <label>Password</label>
                     <input type="password" id="studentPassword" placeholder="Enter your password" required>
                 </div>
+
                 <button type="button" id="updateDbButton" class="update-btn">Update Database</button>
+
             </div>
         </div>
 
@@ -182,6 +152,7 @@
             <div class="card">
                 <div class="preview-header">
                     <h2>Preview</h2>
+                    <div id="preview-word-count" class="word-count"></div>
                     <button class="download-btn" onclick="generatePDF()">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -210,7 +181,7 @@
                 <h3>Developers</h3>
                 <ul>
                     <li><a href="https://qknot.github.io/Portfolio/" target="_blank">Rahul Kumar Ghosh</a></li>
-                    <li><a href="https://sickkick1213.github.io/My_Portfolio/" target="_blank">Raul Arvin Jobel</a></li>
+                    <li><a href="https://sickkick1213.github.io/My_Portfolio/" target="_blank">Raul Jobel Baroi</a></li>
                 </ul>
             </div>
             <div class="repository">
@@ -228,6 +199,6 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="App/script.js"></script>
 </body>
 </html>
