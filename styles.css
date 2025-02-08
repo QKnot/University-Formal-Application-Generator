@@ -97,78 +97,19 @@ h2 {
     margin-top: 2rem;
 }
 
-/* Existing preview header styles */
-.preview-header {
-    width: 210mm;
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 1rem;
-}
-
-/* Make preview content responsive */
 .preview-content {
-    width: 100%;
-    max-width: 210mm; /* A4 width */
-    min-height: 297mm;
-    padding: 25.4mm;
-    margin: 0 auto;
+    font-family: "Times New Roman", serif;
+    font-size: 12pt;
+    line-height: 1.5;
+    padding: 25.4mm;  /* 1 inch margin */
     background: white;
+    min-height: 297mm;
+    width: 210mm;     /* A4 width */
+    margin: 0 auto;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     text-align: justify;
-    overflow-x: auto;
 }
 
-/* Responsive adjustments for mobile */
-@media screen and (max-width: 768px) {
-    .preview-header {
-        width: 100%;
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .preview-header h2 {
-        margin-bottom: 0.5rem;
-    }
-
-    .word-count {
-        order: 2;
-        text-align: center;
-    }
-
-    .download-btn {
-        order: 3;
-        width: 100%;
-        justify-content: center;
-        padding: 0.75rem;
-        margin-top: 0.5rem;
-    }
-
-    .preview-content {
-        padding: 15mm;
-        min-height: auto;
-        font-size: 10pt;
-    }
-
-    /* Adjust card padding for mobile */
-    #preview .card {
-        padding: 1rem;
-    }
-}
-
-/* Additional mobile optimizations */
-@media screen and (max-width: 480px) {
-    .container {
-        margin: 1rem auto;
-        padding: 0 0.5rem;
-    }
-
-    .card {
-        padding: 1rem;
-    }
-}
 .preview-content div {
     font-family: "Times New Roman", serif;
     font-size: 12pt;
@@ -210,10 +151,13 @@ h2 {
     padding: 2rem;
 }
 
-/* .preview-header {
-    width: 210mm;
+.preview-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
     margin-bottom: 1rem;
-} */
+}
 
 .template-section {
     background: #f8fafc;
