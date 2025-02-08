@@ -97,23 +97,63 @@ h2 {
     margin-top: 2rem;
 }
 
-/* Preview Section */
-.preview-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.preview-content {
+    font-family: "Times New Roman", serif;
+    font-size: 12pt;
+    line-height: 1.5;
+    padding: 25.4mm;  /* 1 inch margin */
+    background: white;
+    min-height: 297mm;
+    width: 210mm;     /* A4 width */
+    margin: 0 auto;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: justify;
+}
+
+.preview-content div {
+    font-family: "Times New Roman", serif;
+    font-size: 12pt;
+}
+
+#preview-date {
     margin-bottom: 1.5rem;
 }
 
-.preview-content {
-    font-family: "Times New Roman", Times, serif;
-    font-size: 12px;
+#preview-recipient {
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+#preview-subject {
+    margin-bottom: 1.5rem;
+}
+
+#preview-salutation {
+    margin-bottom: 1.5rem;
+}
+
+#preview-body {
+    margin-bottom: 1.5rem;
+    text-align: justify;
+}
+
+#preview-signature {
+    margin-top: 2rem;
+    line-height: 1.6;
+}
+
+/* Ensure preview container is centered and scrollable */
+#preview .card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: auto;
     padding: 2rem;
-    background: white;
-    min-height: 297mm;
+}
+
+.preview-header {
     width: 210mm;
-    margin: 0 auto;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
 }
 
 .template-section {

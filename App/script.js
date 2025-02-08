@@ -398,7 +398,7 @@ class PreviewManager {
         // Update word count display
         const wordCount = FormUtils.countBodyWords();
         this.updateElement('preview-word-count', 
-            `Word Count: ${wordCount} words (${Math.round(wordCount/250*100)}% of typical page)`);
+            `Word Count: ${wordCount} / 250 words (${Math.round(wordCount/250*100)}% of typical page)`);
         
         // Update preview sections
         this.updateElement('preview-date', `<strong>${formData.date || ''}</strong>`);
@@ -486,16 +486,38 @@ class PDFGenerator {
         const clone = content.cloneNode(true);
         document.body.appendChild(clone);
         
+        // Match exact preview styling
         Object.assign(clone.style, {
             width: '210mm',
-            padding: '20mm 30mm',
+            minHeight: '297mm',
+            padding: '25.4mm',
             position: 'fixed',
             left: '-9999px',
-            lineHeight: '1.6',
+            lineHeight: '1.5',
             fontFamily: 'Times New Roman, serif',
             fontSize: '12pt',
             textAlign: 'justify',
-            marginBottom: '12pt'
+            backgroundColor: '#ffffff'
+        });
+
+        // Apply consistent styling to all text elements
+        const elements = clone.querySelectorAll('div');
+        elements.forEach(element => {
+            element.style.fontFamily = 'Times New Roman, serif';
+            element.style.fontSize = '12pt';
+            
+            // Match preview margins
+            if (element.id === 'preview-recipient' || element.id === 'preview-signature') {
+                element.style.lineHeight = '1.6';
+            }
+            
+            if (['preview-date', 'preview-recipient', 'preview-subject', 'preview-salutation', 'preview-body'].includes(element.id)) {
+                element.style.marginBottom = '1.5rem';
+            }
+            
+            if (element.id === 'preview-signature') {
+                element.style.marginTop = '2rem';
+            }
         });
 
         return clone;
@@ -523,11 +545,14 @@ class PDFGenerator {
         }
 
         const { jsPDF } = window.jspdf;
+        
         const pdf = new jsPDF({
             orientation: 'portrait',
             unit: 'mm',
             format: 'a4',
-            compress: true
+            compress: true,
+            putOnlyUsedFonts: true,
+            floatPrecision: 16
         });
 
         const scale = 2;
@@ -545,11 +570,11 @@ class PDFGenerator {
         const imgWidth = 210;
         const imgHeight = (scaledCanvas.height * imgWidth) / scaledCanvas.width;
         
-        const imgData = scaledCanvas.toDataURL('image/jpeg', 0.8);
+        const imgData = scaledCanvas.toDataURL('image/jpeg', 1.0);
         
         pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
         
-        pdf.save(`application_${new Date().toISOString().slice(0,10)}.pdf`);
+        pdf.save(`formal_application_${new Date().toISOString().slice(0,10)}.pdf`);
     }
 
     showSpinner() {
