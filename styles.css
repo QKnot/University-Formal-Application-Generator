@@ -310,3 +310,35 @@ h2 {
     background: #f3f4f6;
     border-radius: 0.25rem;
 }
+.download-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.download-btn,
+.download-docx-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.download-btn:hover,
+.download-docx-btn:hover {
+    background-color: #1d4ed8;
+}
+
+.download-docx-btn {
+    background-color: #047857;
+}
+
+.download-docx-btn:hover {
+    background-color: #065f46;
+}

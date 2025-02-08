@@ -589,11 +589,236 @@ class PDFGenerator {
         }
     }
 }
+class DocxGenerator {
+    constructor() {
+        this.spinner = document.getElementById('loadingSpinner');
+    }
+
+    async generateDOCX() {
+        if (!FormUtils.validateRequiredFields()) {
+            return;
+        }
+
+        this.showSpinner();
+
+        try {
+            if (typeof docx === 'undefined') {
+                throw new Error('DOCX library not loaded');
+            }
+
+            const formData = FormUtils.getFormData();
+            const doc = this.createDocument(formData);
+            await this.saveDocument(doc);
+        } catch (error) {
+            console.error('Error generating DOCX:', error);
+            alert('Error generating DOCX. Please try again.');
+        } finally {
+            this.hideSpinner();
+        }
+    }
+
+    createDocument(formData) {
+        const doc = new docx.Document({
+            sections: [{
+                properties: {
+                    page: {
+                        margin: {
+                            top: docx.convertInchesToTwip(1),
+                            right: docx.convertInchesToTwip(1),
+                            bottom: docx.convertInchesToTwip(1),
+                            left: docx.convertInchesToTwip(1),
+                        },
+                    },
+                },
+                children: [
+                    // Date
+                    new docx.Paragraph({
+                        children: [
+                            new docx.TextRun({
+                                text: formData.date,
+                                bold: true,
+                            }),
+                        ],
+                        spacing: {
+                            after: 300,
+                            line: 360, // 1.5 line spacing
+                            lineRule: "auto"
+                        },
+                        alignment: docx.AlignmentType.LEFT
+                    }),
+
+                    // Recipient Information
+                    new docx.Paragraph({
+                        children: [
+                            new docx.TextRun("To"),
+                            new docx.TextRun({
+                                text: formData.designation,
+                                break: 1
+                            }),
+                            new docx.TextRun({
+                                text: formData.department || '',
+                                break: formData.department ? 1 : 0
+                            }),
+                            new docx.TextRun({
+                                text: formData.universityName,
+                                break: 1
+                            }),
+                        ],
+                        spacing: {
+                            after: 300,
+                            line: 360,
+                            lineRule: "auto"
+                        },
+                        alignment: docx.AlignmentType.LEFT
+                    }),
+
+                    // Subject
+                    new docx.Paragraph({
+                        children: [
+                            new docx.TextRun({
+                                text: `Subject: ${formData.subject}`,
+                                bold: true,
+                            }),
+                        ],
+                        spacing: {
+                            after: 300,
+                            line: 360,
+                            lineRule: "auto"
+                        },
+                        alignment: docx.AlignmentType.LEFT
+                    }),
+
+                    // Salutation
+                    new docx.Paragraph({
+                        children: [
+                            new docx.TextRun(`Dear ${formData.gender},`),
+                        ],
+                        spacing: {
+                            after: 300,
+                            line: 360,
+                            lineRule: "auto"
+                        },
+                        alignment: docx.AlignmentType.LEFT
+                    }),
+
+                    // Body Content
+                    new docx.Paragraph({
+                        children: [
+                            new docx.TextRun(
+                                `${formData.introduction} ${formData.description} ${formData.reason}`
+                            ),
+                        ],
+                        spacing: {
+                            after: 300,
+                            line: 360,
+                            lineRule: "auto"
+                        },
+                        alignment: docx.AlignmentType.JUSTIFIED
+                    }),
+
+                    // Details (if available)
+                    ...(formData.details ? [new docx.Paragraph({
+                        children: [
+                            new docx.TextRun(formData.details),
+                        ],
+                        spacing: {
+                            after: 300,
+                            line: 360,
+                            lineRule: "auto"
+                        },
+                        alignment: docx.AlignmentType.JUSTIFIED
+                    })] : []),
+
+                    // Closing
+                    new docx.Paragraph({
+                        children: [
+                            new docx.TextRun(formData.closing),
+                        ],
+                        spacing: {
+                            after: 300,
+                            line: 360,
+                            lineRule: "auto"
+                        },
+                        alignment: docx.AlignmentType.JUSTIFIED
+                    }),
+
+                    // Signature
+                    new docx.Paragraph({
+                        children: [
+                            new docx.TextRun("Yours sincerely,"),
+                            new docx.TextRun({
+                                text: "",
+                                break: 2
+                            }),
+                            new docx.TextRun(formData.studentName),
+                            new docx.TextRun({
+                                text: `ID: ${formData.studentId}`,
+                                break: 1
+                            }),
+                            ...(formData.studentSection ? [new docx.TextRun({
+                                text: `Section: ${formData.studentSection}`,
+                                break: 1
+                            })] : []),
+                            new docx.TextRun({
+                                text: formData.studentDepartment,
+                                break: 1
+                            }),
+                            new docx.TextRun({
+                                text: formData.studentUniversityName,
+                                break: 1
+                            }),
+                            ...(formData.contactInfo ? [new docx.TextRun({
+                                text: formData.contactInfo,
+                                break: 1
+                            })] : []),
+                        ],
+                        spacing: {
+                            line: 360,
+                            lineRule: "auto"
+                        },
+                        alignment: docx.AlignmentType.LEFT
+                    }),
+                ],
+            }],
+        });
+
+        return doc;
+    }
+
+    async saveDocument(doc) {
+        try {
+            const blob = await docx.Packer.toBlob(doc);
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `formal_application_${new Date().toISOString().slice(0,10)}.docx`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            throw new Error(`Error saving document: ${error.message}`);
+        }
+    }
+
+    showSpinner() {
+        if (this.spinner) {
+            this.spinner.style.display = 'flex';
+        }
+    }
+
+    hideSpinner() {
+        if (this.spinner) {
+            this.spinner.style.display = 'none';
+        }
+    }
+}
 
 class ApplicationManager {
     constructor() {
         this.previewManager = new PreviewManager();
         this.pdfGenerator = new PDFGenerator();
+        this.docxGenerator = new DocxGenerator();
         this.initializeEventListeners();
         this.initializeUpdateButton();
     }
@@ -632,6 +857,13 @@ class ApplicationManager {
             if (downloadBtn) {
                 downloadBtn.addEventListener('click', () => {
                     this.pdfGenerator.generatePDF();
+                });
+            }
+            // In initializeEventListeners() method
+            const downloadDocxBtn = document.querySelector('.download-docx-btn');
+            if (downloadDocxBtn) {
+                downloadDocxBtn.addEventListener('click', () => {
+                    this.docxGenerator.generateDOCX();
                 });
             }
         } catch (error) {
@@ -704,3 +936,4 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('Error initializing application:', error);
     }
 });
+
