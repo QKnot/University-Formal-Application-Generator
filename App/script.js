@@ -5,15 +5,17 @@ let TEMPLATES = {};
 async function loadTemplates() {
     try {
         const response = await fetch('jsonData/templates.json');
-        if (!response.ok) {
-            throw new Error('Failed to load templates');
-        }
+        if (!response.ok) throw new Error('Failed to load templates');
         TEMPLATES = await response.json();
+        
+        // Initialize templates directly in the search instance
+        if (window.applicationInstance?.templateSearch) {
+            window.applicationInstance.templateSearch.setTemplates(TEMPLATES);
+        }
     } catch (error) {
         console.error('Error loading templates:', error);
     }
 }
-
 // Load universities into select dropdown
 async function loadUniversities() {
     try {
@@ -142,11 +144,6 @@ const supabaseClient = createClient(
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndjZWtjYWdvamd2Z2tmaGJnbmZ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgyOTA0MTAsImV4cCI6MjA1Mzg2NjQxMH0.hryXIl30caQ_ILCv1iwyjRcRWpJXjJXeVk1e8xRbVrg'
 );
 
-// // Add window.generatePDF function for the download button
-// window.generatePDF = async function() {
-//     const pdfGenerator = new PDFGenerator();
-//     await pdfGenerator.generatePDF();
-// };
 
 async function updateStudentData() {
     // Get form values and validate required fields
@@ -576,7 +573,8 @@ class PDFGenerator {
         
         const studentId = document.getElementById('studentId')?.value?.trim() || 'unknown';
         const currentDate = new Date().toISOString().slice(0,10); 
-        pdf.save(`${studentId}_Application_${currentDate}.pdf`);
+        const name = (document.getElementById('pdfName')?.value?.trim() || `${studentId}_Application_${currentDate}`).replace(/\s+/g, '_');
+        pdf.save(`${name}.pdf`);
     }
 
     showSpinner() {
@@ -826,7 +824,8 @@ class DocxGenerator {
             link.href = url;
             const studentId = document.getElementById('studentId')?.value?.trim() || 'unknown';
             const currentDate = new Date().toISOString().slice(0,10); 
-            link.download = `${studentId}_Application_${currentDate}.docx`;
+            const name = document.getElementById('pdfName')?.value?.trim() || `${studentId}_Application_${currentDate}`;
+            link.download = `${name}.docx`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -854,6 +853,9 @@ class ApplicationManager {
         this.previewManager = new PreviewManager();
         this.pdfGenerator = new PDFGenerator();
         this.docxGenerator = new DocxGenerator();
+        this.templateSearch = new TemplateSearch();
+        // Initialize template search after creation
+        this.templateSearch.setTemplates(TEMPLATES);
         this.initializeEventListeners();
         this.initializeUpdateButton();
     }
@@ -867,28 +869,12 @@ class ApplicationManager {
 
     initializeEventListeners() {
         try {
-            // Template selection
-            const templateSelect = document.getElementById('template-select');
-            if (templateSelect) {
-                templateSelect.addEventListener('change', (e) => {
-                    if (TEMPLATES[e.target.value]) {
-                        this.populateTemplate(TEMPLATES[e.target.value]);
-                    }
-                });
-            }
-
-            // Tab switching
-            document.querySelectorAll('.tab-button').forEach(button => {
-                button.addEventListener('click', () => this.handleTabSwitch(button));
-            });
-
             // Form updates
             document.querySelectorAll('input, textarea, select').forEach(element => {
                 element.addEventListener('input', () => this.previewManager.updatePreview());
             });
 
-            // PDF and DOCX generation
-            // Remove existing listeners first
+            // Download buttons
             const downloadBtn = document.querySelector('.download-btn');
             const downloadDocxBtn = document.querySelector('.download-docx-btn');
 
@@ -903,6 +889,11 @@ class ApplicationManager {
                 downloadDocxBtn.parentNode.replaceChild(newDownloadDocxBtn, downloadDocxBtn);
                 newDownloadDocxBtn.addEventListener('click', () => this.docxGenerator.generateDOCX());
             }
+
+            // Tab switching
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.addEventListener('click', () => this.handleTabSwitch(button));
+            });
         } catch (error) {
             console.error('Error initializing event listeners:', error);
         }
@@ -911,12 +902,15 @@ class ApplicationManager {
     populateTemplate(template) {
         try {
             const fields = ['subject', 'introduction', 'description', 'reason', 'details', 'closing'];
+            
             fields.forEach(field => {
                 const element = document.getElementById(field);
                 if (element) {
-                    element.value = template[field];
+                    element.value = template[field] || '';
+                    element.dispatchEvent(new Event('input', { bubbles: true }));
                 }
             });
+
             this.previewManager.updatePreview();
         } catch (error) {
             console.error('Error populating template:', error);
@@ -942,13 +936,16 @@ class ApplicationManager {
         }
     }
 }
-
-// Initialize application
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        // Load all data
+        // Load templates first
+        await loadTemplates();
+        
+        // Initialize the application manager
+        window.applicationInstance = new ApplicationManager();
+        
+        // Load other data
         await Promise.all([
-            loadTemplates(),
             loadUniversities(),
             loadTeacherDesignation(),
             loadDepartments(),
@@ -956,10 +953,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             loadStudentDepartments()
         ]);
         
-        // Initialize the application manager
-        const app = new ApplicationManager();
-        
-        // Add event listener for student ID input
+        // Initialize student ID listener
         const studentIdInput = document.getElementById('studentId');
         if (studentIdInput) {
             studentIdInput.addEventListener('input', (e) => {
@@ -973,4 +967,239 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('Error initializing application:', error);
     }
 });
+// Add this to your script.js file
 
+class TemplateSearch {
+    constructor() {
+        this.searchInput = null;
+        this.searchResults = null;
+        this.templates = {};
+        this.selectedTemplate = null;
+        this.onTemplateSelect = null;
+        this.initializeSearchUI();
+        this.addEventListeners();
+    }
+
+    initializeSearchUI() {
+        // Create search container
+        const templateSection = document.querySelector('.template-section');
+        if (!templateSection) {
+            console.error('Template section not found');
+            return;
+        }
+
+        const searchContainer = document.createElement('div');
+        searchContainer.className = 'form-group template-search';
+        
+        // Create search input
+        this.searchInput = document.createElement('input');
+        this.searchInput.type = 'text';
+        this.searchInput.id = 'template-search';
+        this.searchInput.className = 'form-control';
+        this.searchInput.placeholder = 'Search templates...';
+        
+        // Create search results container
+        this.searchResults = document.createElement('div');
+        this.searchResults.className = 'template-search-results';
+        this.searchResults.style.cssText = `
+            display: none;
+            position: absolute;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            max-height: 300px;
+            overflow-y: auto;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        `;
+        
+        // Add elements to DOM
+        searchContainer.appendChild(this.searchInput);
+        searchContainer.appendChild(this.searchResults);
+        
+        // Insert before template select
+        const templateSelect = document.getElementById('template-select');
+        if (templateSelect && templateSelect.parentElement) {
+            templateSection.insertBefore(searchContainer, templateSelect.parentElement);
+        } else {
+            templateSection.appendChild(searchContainer);
+        }
+    }
+
+    addEventListeners() {
+        if (!this.searchInput || !this.searchResults) return;
+
+        // Debounced search handler
+        let searchTimeout;
+        this.searchInput.addEventListener('input', () => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => this.handleSearch(), 300);
+        });
+
+        // Show results on focus
+        this.searchInput.addEventListener('focus', () => {
+            if (this.searchInput.value.trim()) {
+                this.showResults();
+            }
+        });
+
+        // Handle clicks outside search
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.template-search')) {
+                this.hideResults();
+            }
+        });
+
+        // Prevent clicks within results from bubbling
+        this.searchResults.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+    }
+
+    setTemplates(templates) {
+        this.templates = templates;
+    }
+
+    handleSearch() {
+        const searchTerm = this.searchInput.value.trim().toLowerCase();
+
+        if (!searchTerm) {
+            this.hideResults();
+            return;
+        }
+
+        const results = this.searchTemplates(searchTerm);
+        this.displayResults(results);
+    }
+
+    searchTemplates(searchTerm) {
+        if (!this.templates || typeof this.templates !== 'object') {
+            console.error('Templates not properly loaded:', this.templates);
+            return [];
+        }
+
+        return Object.entries(this.templates)
+            .filter(([key, template]) => {
+                const searchableText = [
+                    key,
+                    template.subject,
+                    template.introduction,
+                    template.description,
+                    template.reason,
+                    template.details,
+                    template.closing
+                ].filter(Boolean).join(' ').toLowerCase();
+                
+                return searchableText.includes(searchTerm);
+            })
+            .map(([key, template]) => ({
+                key,
+                ...template
+            }));
+    }
+
+    displayResults(results) {
+        if (!this.searchResults) return;
+
+        this.searchResults.innerHTML = '';
+        
+        if (results.length === 0) {
+            const noResults = document.createElement('div');
+            noResults.className = 'template-result no-results';
+            noResults.style.padding = '10px';
+            noResults.textContent = 'No templates found';
+            this.searchResults.appendChild(noResults);
+        } else {
+            results.forEach(result => {
+                const resultElement = document.createElement('div');
+                resultElement.className = 'template-result';
+                resultElement.style.cssText = `
+                    padding: 10px;
+                    cursor: pointer;
+                    border-bottom: 1px solid #eee;
+                    transition: background-color 0.2s;
+                `;
+                
+                resultElement.innerHTML = `
+                    <div style="font-weight: bold">${this.formatTemplateName(result.key)}</div>
+                    <div style="color: #666; font-size: 0.9em">${result.subject || ''}</div>
+                `;
+                
+                resultElement.addEventListener('mouseenter', () => {
+                    resultElement.style.backgroundColor = '#f5f5f5';
+                });
+                
+                resultElement.addEventListener('mouseleave', () => {
+                    resultElement.style.backgroundColor = 'white';
+                });
+                
+                resultElement.addEventListener('click', () => {
+                    this.selectTemplate(result.key);
+                });
+                
+                this.searchResults.appendChild(resultElement);
+            });
+        }
+        
+        this.showResults();
+    }
+
+    formatTemplateName(key) {
+        return key
+            .replace(/([A-Z])/g, ' $1')
+            .replace(/^./, str => str.toUpperCase())
+            .trim();
+    }
+
+    selectTemplate(templateKey) {
+        // Update template select dropdown
+        const templateSelect = document.getElementById('template-select');
+        if (templateSelect) {
+            templateSelect.value = templateKey;
+            // Trigger change event
+            const event = new Event('change', { bubbles: true });
+            templateSelect.dispatchEvent(event);
+        }
+        
+        // Populate template directly
+        const template = this.templates[templateKey];
+        if (template) {
+            this.populateTemplate(template);
+        }
+        
+        // Call the callback if it exists
+        if (this.onTemplateSelect) {
+            this.onTemplateSelect(templateKey);
+        }
+        
+        this.hideResults();
+        this.searchInput.value = '';
+        this.selectedTemplate = templateKey;
+    }
+
+    populateTemplate(template) {
+        const fields = ['subject', 'introduction', 'description', 'reason', 'details', 'closing'];
+        
+        fields.forEach(field => {
+            const element = document.getElementById(field);
+            if (element) {
+                element.value = template[field] || '';
+                // Trigger input event to update preview
+                element.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+        });
+    }
+
+    showResults() {
+        if (this.searchResults) {
+            this.searchResults.style.display = 'block';
+        }
+    }
+
+    hideResults() {
+        if (this.searchResults) {
+            this.searchResults.style.display = 'none';
+        }
+    }
+}

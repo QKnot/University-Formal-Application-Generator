@@ -14,6 +14,14 @@
         "reason": "I am requesting a leave of absence due to [state the reason].",
         "details": "I anticipate that my leave will begin on [start date] and will last until [end date], pending your approval. I have attached any necessary documentation to support my request. Please let me know if you require any further information or paperwork to process my application.",
         "closing": "I sincerely appreciate your understanding and support during this time. I look forward to your positive response."
+    },
+    "longTermClassAbsence": {
+        "subject": "Application for Long-Term Absence from Class.",
+        "introduction": "I hope this letter finds you well. I am writing to formally request a long-term leave of absence from my classes due to unavoidable circumstances.",
+        "description": "Due to [state the reason], I am unable to attend classes for an extended period. I deeply regret any inconvenience this may cause and assure you that I am committed to keeping up with my academic responsibilities.",
+        "reason": "My absence is necessitated by [provide more details about the reason, such as medical treatment, family emergency, or other significant personal reasons]. I have attached any relevant documentation to support my request.",
+        "details": "I anticipate that my leave will begin on [start date] and will last until [end date], pending your approval. I will make every effort to stay updated with the coursework through available resources and communicate with my instructors regarding any assignments or lectures I may miss. If there are any formalities or additional steps required to process my request, please let me know.",
+        "closing": "I sincerely appreciate your understanding and support during this challenging time. I would be grateful for any guidance on how to manage my academic responsibilities during my absence. Thank you for your consideration, and I look forward to your positive response."
     }
 }
 
