@@ -142,11 +142,11 @@ const supabaseClient = createClient(
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndjZWtjYWdvamd2Z2tmaGJnbmZ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgyOTA0MTAsImV4cCI6MjA1Mzg2NjQxMH0.hryXIl30caQ_ILCv1iwyjRcRWpJXjJXeVk1e8xRbVrg'
 );
 
-// Add window.generatePDF function for the download button
-window.generatePDF = async function() {
-    const pdfGenerator = new PDFGenerator();
-    await pdfGenerator.generatePDF();
-};
+// // Add window.generatePDF function for the download button
+// window.generatePDF = async function() {
+//     const pdfGenerator = new PDFGenerator();
+//     await pdfGenerator.generatePDF();
+// };
 
 async function updateStudentData() {
     // Get form values and validate required fields
@@ -398,7 +398,7 @@ class PreviewManager {
         // Update word count display
         const wordCount = FormUtils.countBodyWords();
         this.updateElement('preview-word-count', 
-            `Word Count: ${wordCount} / 250 words (${Math.round(wordCount/250*100)}% of typical page)`);
+            `Word Count: ${wordCount} / 200 words (${Math.round(wordCount/200*100)}% of typical page)`);
         
         // Update preview sections
         this.updateElement('preview-date', `<strong>${formData.date || ''}</strong>`);
@@ -574,7 +574,9 @@ class PDFGenerator {
         
         pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
         
-        pdf.save(`formal_application_${new Date().toISOString().slice(0,10)}.pdf`);
+        const studentId = document.getElementById('studentId')?.value?.trim() || 'unknown';
+        const currentDate = new Date().toISOString().slice(0,10); 
+        pdf.save(`${studentId}_Application_${currentDate}.pdf`);
     }
 
     showSpinner() {
@@ -589,6 +591,7 @@ class PDFGenerator {
         }
     }
 }
+//docs generator class
 class DocxGenerator {
     constructor() {
         this.spinner = document.getElementById('loadingSpinner');
@@ -637,11 +640,12 @@ class DocxGenerator {
                             new docx.TextRun({
                                 text: formData.date,
                                 bold: true,
+                                size: 24, // 12pt font
                             }),
                         ],
                         spacing: {
                             after: 300,
-                            line: 360, // 1.5 line spacing
+                            line: 360,
                             lineRule: "auto"
                         },
                         alignment: docx.AlignmentType.LEFT
@@ -650,18 +654,24 @@ class DocxGenerator {
                     // Recipient Information
                     new docx.Paragraph({
                         children: [
-                            new docx.TextRun("To"),
+                            new docx.TextRun({
+                                text: "To",
+                                size: 24
+                            }),
                             new docx.TextRun({
                                 text: formData.designation,
-                                break: 1
+                                break: 1,
+                                size: 24
                             }),
                             new docx.TextRun({
                                 text: formData.department || '',
-                                break: formData.department ? 1 : 0
+                                break: formData.department ? 1 : 0,
+                                size: 24
                             }),
                             new docx.TextRun({
                                 text: formData.universityName,
-                                break: 1
+                                break: 1,
+                                size: 24
                             }),
                         ],
                         spacing: {
@@ -678,6 +688,7 @@ class DocxGenerator {
                             new docx.TextRun({
                                 text: `Subject: ${formData.subject}`,
                                 bold: true,
+                                size: 24
                             }),
                         ],
                         spacing: {
@@ -691,7 +702,10 @@ class DocxGenerator {
                     // Salutation
                     new docx.Paragraph({
                         children: [
-                            new docx.TextRun(`Dear ${formData.gender},`),
+                            new docx.TextRun({
+                                text: `Dear ${formData.gender},`,
+                                size: 24
+                            }),
                         ],
                         spacing: {
                             after: 300,
@@ -704,9 +718,10 @@ class DocxGenerator {
                     // Body Content
                     new docx.Paragraph({
                         children: [
-                            new docx.TextRun(
-                                `${formData.introduction} ${formData.description} ${formData.reason}`
-                            ),
+                            new docx.TextRun({
+                                text: `${formData.introduction} ${formData.description} ${formData.reason}`,
+                                size: 24
+                            }),
                         ],
                         spacing: {
                             after: 300,
@@ -719,7 +734,10 @@ class DocxGenerator {
                     // Details (if available)
                     ...(formData.details ? [new docx.Paragraph({
                         children: [
-                            new docx.TextRun(formData.details),
+                            new docx.TextRun({
+                                text: formData.details,
+                                size: 24
+                            }),
                         ],
                         spacing: {
                             after: 300,
@@ -732,7 +750,10 @@ class DocxGenerator {
                     // Closing
                     new docx.Paragraph({
                         children: [
-                            new docx.TextRun(formData.closing),
+                            new docx.TextRun({
+                                text: formData.closing,
+                                size: 24
+                            }),
                         ],
                         spacing: {
                             after: 300,
@@ -745,31 +766,43 @@ class DocxGenerator {
                     // Signature
                     new docx.Paragraph({
                         children: [
-                            new docx.TextRun("Yours sincerely,"),
+                            new docx.TextRun({
+                                text: "Yours sincerely,",
+                                size: 24
+                            }),
                             new docx.TextRun({
                                 text: "",
-                                break: 2
+                                break: 2,
+                                size: 24
                             }),
-                            new docx.TextRun(formData.studentName),
+                            new docx.TextRun({
+                                text: formData.studentName,
+                                size: 24
+                            }),
                             new docx.TextRun({
                                 text: `ID: ${formData.studentId}`,
-                                break: 1
+                                break: 1,
+                                size: 24
                             }),
                             ...(formData.studentSection ? [new docx.TextRun({
                                 text: `Section: ${formData.studentSection}`,
-                                break: 1
+                                break: 1,
+                                size: 24
                             })] : []),
                             new docx.TextRun({
                                 text: formData.studentDepartment,
-                                break: 1
+                                break: 1,
+                                size: 24
                             }),
                             new docx.TextRun({
                                 text: formData.studentUniversityName,
-                                break: 1
+                                break: 1,
+                                size: 24
                             }),
                             ...(formData.contactInfo ? [new docx.TextRun({
                                 text: formData.contactInfo,
-                                break: 1
+                                break: 1,
+                                size: 24
                             })] : []),
                         ],
                         spacing: {
@@ -791,7 +824,9 @@ class DocxGenerator {
             const url = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
-            link.download = `formal_application_${new Date().toISOString().slice(0,10)}.docx`;
+            const studentId = document.getElementById('studentId')?.value?.trim() || 'unknown';
+            const currentDate = new Date().toISOString().slice(0,10); 
+            link.download = `${studentId}_Application_${currentDate}.docx`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -852,19 +887,21 @@ class ApplicationManager {
                 element.addEventListener('input', () => this.previewManager.updatePreview());
             });
 
-            // PDF generation
+            // PDF and DOCX generation
+            // Remove existing listeners first
             const downloadBtn = document.querySelector('.download-btn');
-            if (downloadBtn) {
-                downloadBtn.addEventListener('click', () => {
-                    this.pdfGenerator.generatePDF();
-                });
-            }
-            // In initializeEventListeners() method
             const downloadDocxBtn = document.querySelector('.download-docx-btn');
+
+            if (downloadBtn) {
+                const newDownloadBtn = downloadBtn.cloneNode(true);
+                downloadBtn.parentNode.replaceChild(newDownloadBtn, downloadBtn);
+                newDownloadBtn.addEventListener('click', () => this.pdfGenerator.generatePDF());
+            }
+
             if (downloadDocxBtn) {
-                downloadDocxBtn.addEventListener('click', () => {
-                    this.docxGenerator.generateDOCX();
-                });
+                const newDownloadDocxBtn = downloadDocxBtn.cloneNode(true);
+                downloadDocxBtn.parentNode.replaceChild(newDownloadDocxBtn, downloadDocxBtn);
+                newDownloadDocxBtn.addEventListener('click', () => this.docxGenerator.generateDOCX());
             }
         } catch (error) {
             console.error('Error initializing event listeners:', error);
