@@ -15,13 +15,109 @@
         "details": "I anticipate that my leave will begin on [start date] and will last until [end date], pending your approval. I have attached any necessary documentation to support my request. Please let me know if you require any further information or paperwork to process my application.",
         "closing": "I sincerely appreciate your understanding and support during this time. I look forward to your positive response."
     },
-    "longTermClassAbsence": {
-        "subject": "Application for Long-Term Absence from Class.",
-        "introduction": "I hope this letter finds you well. I am writing to formally request a long-term leave of absence from my classes due to unavoidable circumstances.",
-        "description": "Due to [state the reason], I am unable to attend classes for an extended period. I deeply regret any inconvenience this may cause and assure you that I am committed to keeping up with my academic responsibilities.",
-        "reason": "My absence is necessitated by [provide more details about the reason, such as medical treatment, family emergency, or other significant personal reasons]. I have attached any relevant documentation to support my request.",
-        "details": "I anticipate that my leave will begin on [start date] and will last until [end date], pending your approval. I will make every effort to stay updated with the coursework through available resources and communicate with my instructors regarding any assignments or lectures I may miss. If there are any formalities or additional steps required to process my request, please let me know.",
-        "closing": "I sincerely appreciate your understanding and support during this challenging time. I would be grateful for any guidance on how to manage my academic responsibilities during my absence. Thank you for your consideration, and I look forward to your positive response."
+    "retake/Re-evaluation" :{
+        "subject":"Application for exam retake/Re-evaluation.",
+        "introduction":"I, [Your Full Name], a student enrolled in the [Program Name, e.g., Bachelor of Science in Computer Science] program with Student ID [Your Student ID], hereby formally submit this application to request a [retake/re-evaluation] of my examination for the course [Course Code and Name] held on [Exam Date].",
+        "description":"I respectfully request a retake of the aforementioned exam / re-evaluation of my exam paper.",
+        "reason":"The primary reason for my request is [briefly describe the reason].I believe that my performance was not reflective of my true capabilities due to these unforeseen factors.",
+        "details":"To further support my request, I would like to mention [provide any additional details, such as medical certificates, relevant documentation].",
+        "closing":"I kindly request that you consider my application and grant me the opportunity for a retake / re-evaluation. I remain committed to my academic progress and am hopeful for a positive resolution. Please let me know if you require any further documentation or clarification regarding my request."
+    },
+    "course withdrawal/Dropping a course":{
+        "subject":"Application for course withdrawal.",
+        "introduction":"I am writing to formally request to withdraw from the [Course Name] course, section [Section], with course code [Course Code], which I am currently enrolled in for the [Semester/Term - e.g., Fall 2025] semester/term.",
+        "description":"I am requesting to withdraw from the aforementioned course. I understand the implications of withdrawing from a course, including potential impacts on my academic progress.",
+        "reason":"Due to unforeseen circumstances, including [briefly explain the situation]",
+        "details":"I have thoroughly considered the implications of withdrawing and believe it is the most prudent decision under the current circumstances.",
+        "closing":"I understand the university's withdrawal policy and any associated deadlines. I respectfully request that my withdrawal from [Course Name] be approved."
+    },
+    "Change of Course/Section":{
+        "subject":"Application for Change of Course/Section.",
+        "introduction":"Respected [Recipient's Title/Department], I, [Your Name], student ID [Your Student ID], am writing to formally request a change of course/section. I am currently enrolled in [Current Course/Section Name] and wish to transfer to [Desired Course/Section Name].",
+        "description":"I am enrolled in the [Current Program Name] program and have completed [Number] semesters.  My current course/section, [Current Course/Section Name]. I am requesting a transfer to [Desired Course/Section Name]",
+        "reason":"My primary reason for this request is [Clearly and concisely state your reason.  E.g., a stronger alignment with my academic interests]",
+        "details":"I understand the implications of this change and have consulted with [Advisor/Relevant Department, if applicable]. I am aware of the potential impact on my academic progress and am prepared to meet any requirements associated with the transfer.",
+        "closing":"I respectfully request that you consider my application favorably. I am confident that this change will significantly enhance my academic experience. Thank you for your time and consideration."
+    },
+    "Grade Improvement":{
+        "subject":"Application for Grade Improvement.",
+        "introduction":"I am writing to formally request a review and subsequent improvement of my grade in [Course Name/Course Code]. As a dedicated student of [Department/Program Name], I hold my academic record in the highest regard and seek to ensure it accurately reflects my capabilities.",
+        "description":"I received a grade of [Current Grade] in [Course Name/Course Code]. I believe my performance in this course did not accurately reflect my understanding of the material. I am requesting the opportunity to demonstrate improved competency in the subject matter.",
+        "reason":"My request is based on [Clearly and concisely state your reason.]",
+        "details":"I am prepared to undertake any assessment or coursework deemed necessary by the department to demonstrate my improved understanding. I understand that grade improvement is not guaranteed and accept the department's decision.",
+        "closing":"I kindly request your thoughtful consideration of my application for grade improvement. Thank you for your time and attention to this matter."
+    },
+    "Late Submission of Assignments/Projects":{
+        "subject":"Application for Late Submission of Assignments/Projects.",
+        "introduction":"I, [Your Full Name], a student enrolled in [Course Name/Code] (ID: [Student ID]), humbly submit this application to formally request an extension for the submission of [assignment/project title(s)], originally due on [Original Deadline].",
+        "description":"Regrettably, I have been unable to meet the stipulated deadline despite my earnest efforts. The assignments/projects in question are critical to my academic progress, and I assure you of my commitment to submitting high-quality work upon approval of this request.",
+        "reason":"The delay stems from [specific reason: e.g., unforeseen medical circumstances]",
+        "details":"I understand the importance of adhering to deadlines and sincerely regret any inconvenience this may cause.",
+        "closing":"I sincerely apologize for the inconvenience and deeply appreciate your understanding as well as respectfully request your approval for the late submission of my [Assignment/Project Name]."
+    },
+    "Administrative Requests":{
+        "subject":"Administrative Request - [Your Name] - [Student ID] - [Brief Description of Request].",
+        "introduction":"Respected [Recipient's Title/Department], I, [Your Name], student ID [Your Student ID], am writing to formally request administrative assistance regarding [Briefly state the subject of your request, e.g., transcript issuance, enrollment verification, or name change on records].",
+        "description":"I am a student in the [Program Name] program and have completed [Number] semesters. I require [Clearly and concisely state your request, e.g., an official transcript for transfer applications, a letter verifying my enrollment status, or correction of my name on university records from [Incorrect Name] to [Correct Name]].",
+        "reason":"The reason for this request is [Clearly and concisely state the reason. E.g., application requirements for [Institution], proof of enrollment for [Purpose], or discrepancy in my academic records].",
+        "details":"I am available to provide any further information or documentation as needed.",
+        "closing":"I respectfully request that you consider my application favorably and expedite the process.  Thank you for your time and consideration."
+    },
+    "Bonafide Certificate":{
+        "subject":"Application for Bonafide Certificate.",
+        "introduction":"Respected [Recipient's Title/Department], I, [Your Name], student ID [Your Student ID], enrolled in [Course Name/Program Name], am writing to request a bonafide certificate.",
+        "description":"I am currently a [Year/Semester] student in the [Course Name/Program Name] program at [University Name]. My student ID is [Your Student ID].  I require a bonafide certificate stating that I am a currently enrolled student at your esteemed university.",
+        "reason":"This certificate is required for [Clearly and concisely state the reason. E.g., applying for a scholarship, opening a bank account, obtaining a visa, or submitting to [Organization/Institution]].",
+        "details":"I kindly request the issuance of the certificate at the earliest to ensure a smooth completion of my application process. If any additional formalities are required, I am willing to fulfill them promptly.",
+        "closing":"I would be grateful for your swift assistance in this matter. Thank you for your time and consideration."
+    },
+    "Character Certificate":{
+        "subject":"Application for Issuance of Character Certificate.",
+        "introduction":"I am writing to formally request the issuance of a Character Certificate from [University Name]. As a former/current student of [Department/Program Name], I require this document to fulfill the formal requirements of [reason, e.g., further studies, employment].",
+        "description":"The Character Certificate serves as an official attestation of a student’s moral conduct and disciplinary record during their tenure at the university. Given my association with this esteemed institution, I seek this certification to validate my adherence to ethical and academic principles.",
+        "reason":"The certificate is an essential requirement for my application to [mention purpose, e.g., a postgraduate program, a prospective employer]. As I have maintained an exemplary academic and disciplinary record throughout my time at the university, I humbly request its issuance at the earliest convenience.",
+        "details":"I have attached the necessary documents, including my student identification details and any requisite forms, to facilitate the processing of my request. If any further information is required, I am available for clarification.",
+        "closing":"I sincerely appreciate your time and consideration in processing my request. I look forward to your positive response at your earliest convenience."
+    },
+    "Transfer Certificate":{
+        "subject":"Application for Issuance of Transfer Certificate.",
+        "introduction":"I, [Your Name], student ID [Your Student ID], formerly enrolled in [Course Name/Program Name], am writing to request a Transfer Certificate (TC).",
+        "description":"I was a [Year/Semester] student in the [Course Name/Program Name] program at [University Name] and have completed [Number] semesters/years of study. My last date of attendance was [Date]. I require my Transfer Certificate to continue my education at another institution.",
+        "reason":"I am requesting this TC because [Clearly and concisely state your reason.]",
+        "details":"I have attached all relevant documents, including my student identification details and clearance forms, to expedite the processing of my request. If any further formalities are required, I am willing to comply at the earliest convenience.",
+        "closing":"I sincerely appreciate your time and consideration in processing my request. I would be grateful for the issuance of my Transfer Certificate at the earliest to facilitate a seamless transition."
+    },
+    "Name/Date of Birth Correction in Records":{
+        "subject":"Application for Name/Date of Birth Correction in University Records.",
+        "introduction":"I am writing to formally request a correction in my official university records regarding my [Name/Date of Birth]. As an enrolled student of [Department/Program Name] at [University Name], I seek to rectify this discrepancy to ensure the accuracy of my academic documents.",
+        "description":"My name is currently recorded as [Incorrect Name] in the university system, while my correct name is [Correct Name]. / My date of birth is recorded as [Incorrect Date], and the correct date is [Correct Date]. This discrepancy is present on [Specify where the error appears, e.g., my academic transcript, student ID card, or online portal].",
+        "reason":"This discrepancy occurred due to [Clearly and concisely state the reason for the error. E.g., a clerical error during initial registration]",
+        "details":"I have attached copies of [Specify supporting documents. E.g., my birth certificate, passport, school leaving certificate, or other official documents] as proof of my correct name/date of birth.",
+        "closing":"I sincerely appreciate your time and consideration in processing this request. I look forward to a prompt resolution at your earliest convenience."    
+    },
+    "Application for Re-issuance of ID Card":{
+        "subject":"Application for Re-issuance of ID Card.",
+        "introduction":"I, [Your Name], student ID [Your Student ID], enrolled in [Course Name/Program Name], am formally writing to request the re-issuance of my student ID card.",
+        "description":"My student ID card was [State the status: lost/stolen/damaged] on [Date of Incident]. I am a [Year/Semester] student in the [Course Name/Program Name] program at [University Name].  My student ID number is [Your Student ID].",
+        "reason":"The reason for requiring a new ID card is [Clearly and concisely state the reason. E.g., loss of my original ID card, theft of my wallet containing my ID card, or damage to my ID card rendering it unusable.].",
+        "details":"I have [Mention any steps taken, e.g., filed a police report regarding the lost/stolen ID card (copy attached), or searched extensively for the lost ID card.].",
+        "closing":"I request you to kindly issue me a duplicate student ID card at your earliest convenience. I understand that there may be a fee associated with this process, which I am prepared to pay. Thank you for your time and consideration."       
+    },
+    "Library Card Renewal/Lost Library Card":{
+        "subject":"Application for Library Card Renewal/Lost Library Card.",
+        "introduction":"Respected [Recipient's Title/Librarian], I, [Your Name], student ID [Your Student ID], enrolled in [Course Name/Program Name], am writing to request the [renewal/replacement] of my library card.",
+        "description":"My library card [State the situation: has expired/was lost/was stolen/was damaged] on [Date of Expiry/Incident, if applicable]. My library card number is [Your Library Card Number, if known]. I am a [Year/Semester] student in the [Course Name/Program Name] program.",
+        "reason":"I require a [renewed/replacement] library card to access the library resources essential for my academic pursuits. [If lost/stolen: The reason for requiring a new card is the [loss/theft] of my original library card. I have [mention if you reported it and to whom, e.g., reported the loss to the university security office].]",
+        "details":"I have attached the required documents, including a copy of my student ID and any necessary fee payment receipts for card renewal or replacement. I am willing to comply with any additional procedures as per university regulations.",
+        "closing":"I sincerely appreciate your time and consideration in processing my request. I would be grateful for a prompt resolution to continue my academic activities without interruption."
+    },
+    "Financial Requests":{
+        "subject":"Request for Financial Assistance (Program: [Program Name], ID: [Student ID]).",
+        "introduction":"I, [Your Full Name], enrolled in the [Program Name] (ID: [Student ID]), humbly submit this application to seek financial support to alleviate unforeseen economic constraints hindering my academic progress.",
+        "description":"Despite meticulous planning, recent financial adversities—stemming from [briefly mention cause: e.g., familial medical emergencies, loss of household income, or currency devaluation]—have rendered me unable to meet essential academic expenses, including tuition fees, research materials, and accommodation costs.",
+        "reason":"This request is necessitated by the urgent need to sustain my enrollment and academic performance without interruption. Without timely assistance, my ability to fulfill coursework obligations,will be severely compromised, jeopardizing my educational trajectory.",
+        "details":"I have also consulted with [Advisor’s Name], my academic mentor, who can corroborate my circumstances. A structured payment plan would be immensely beneficial.",
+        "closing":"I earnestly appeal to the committee’s empathy to consider my plea, assuring you of my dedication to academic excellence and future contributions to the university’s legacy. Your support will not only resolve immediate challenges but also empower me to focus wholly on scholarly pursuits. Kindly notify me of any further requirements."
     }
 }
 
