@@ -118,6 +118,22 @@
         "reason":"This request is necessitated by the urgent need to sustain my enrollment and academic performance without interruption. Without timely assistance, my ability to fulfill coursework obligations,will be severely compromised, jeopardizing my educational trajectory.",
         "details":"I have also consulted with [Advisor’s Name], my academic mentor, who can corroborate my circumstances. A structured payment plan would be immensely beneficial.",
         "closing":"I earnestly appeal to the committee’s empathy to consider my plea, assuring you of my dedication to academic excellence and future contributions to the university’s legacy. Your support will not only resolve immediate challenges but also empower me to focus wholly on scholarly pursuits. Kindly notify me of any further requirements."
+    },
+    "icpcFundingRequest": {
+        "subject": "Application for Financial Assistance for ICPC Participation.",
+        "introduction": "I hope this letter finds you well. I am writing to request financial assistance to support my team’s participation in the International Collegiate Programming Contest (ICPC) scheduled for [date] at [venue].",
+        "description": "We are Team [Your Team Name] from this University, consisting of three students pursuing [Your Degree]. We have been actively involved in competitive programming, and qualifying for ICPC is a great achievement. Representing our institution at this event would be an honor.\nOur team members:\n- **[Your Name] (Team Leader)** – [Your student ID]\n- **[Member 2 Name]** – [Member 2 student ID]\n- **[Member 3 Name]** – [Member 3 student ID]\n",
+        "reason": "Due to financial constraints, we are unable to cover all expenses. We kindly request funding support to participate without financial difficulties.",
+        "details": "Estimated costs include registration fees, travel, and accommodation. I am willing to provide necessary documents for this request.",
+        "closing": "I would be grateful if our request is considered and we receive the support needed. Thank you for your time and consideration."
+    },
+    "iupcFundingRequest": {
+        "subject": "Application for Financial Assistance for IUPC Participation.",
+        "introduction": "I hope this letter finds you well. I am writing to request financial assistance to support my team’s participation in the Inter-University Programming Contest (IUPC) scheduled for [date] at [venue].",
+        "description": "We are Team [Your Team Name] from this University, consisting of three students pursuing [Your Degree]. We have been actively involved in competitive programming, and qualifying for IUPC is a great achievement. Representing our institution at this event would be an honor.\nOur team members:\n- **[Your Name] (Team Leader)** – [Your Student ID]\n- **[Member 2 Name]** – [Member 2 Student ID]\n- **[Member 3 Name]** – [Member 3 Student ID]\n",
+        "reason": "Due to financial constraints, we are unable to cover all expenses. We kindly request funding support to participate without financial difficulties.",
+        "details": "Estimated costs include registration fees, travel, and accommodation. I am willing to provide necessary documents for this request.",
+        "closing": "I would be grateful if our request is considered and we receive the support needed. Thank you for your time and consideration."
     }
 }
 
