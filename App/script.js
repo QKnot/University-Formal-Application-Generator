@@ -269,7 +269,7 @@ async function fetchStudentData(studentId) {
                 'studentSection': data.section,
                 'studentDepartment': data.department,
                 'studentUniversityName': data.university_name,
-                'contactInfo': data.contact_info
+                // 'contactInfo': data.contact_info
             };
 
             for (const [id, value] of Object.entries(fields)) {
