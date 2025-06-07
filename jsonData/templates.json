@@ -182,6 +182,14 @@
         "reason": "Such behavior is not only unprofessional but also impacts the learning atmosphere and student well-being. It is important that university staff maintain a respectful and professional attitude towards students and colleagues.",
         "details": "I am willing to provide further details, including witness statements or any available evidence, to support this complaint. I kindly request the university administration to investigate the matter and take appropriate disciplinary action.",
         "closing": "I appreciate your attention to this serious matter and request prompt action to ensure a safe and professional university environment. Thank you for your time and consideration."
+    },
+    "socialMediaHarassmentComplaint": {
+    "subject": "Complaint Regarding Social Media Harassment",
+    "introduction": "I hope you are doing well. I am writing to formally report an incident of harassment that I have experienced via social media, which has caused emotional distress and concern for my personal safety and privacy.",
+    "description": "The incident occurred on [date] through [social media platform name]. The individual involved, identified as [username or name if known], engaged in [describe the harassment — e.g., sending threatening messages, spreading false information, sharing private images or data without consent, or repeated unwelcome contact]. This behavior has been persistent and deeply disturbing.",
+    "reason": "Online harassment is a serious issue that can have significant emotional, psychological, and reputational impacts. It is crucial to address such incidents promptly to ensure digital spaces remain safe and respectful for everyone.",
+    "details": "I have preserved screenshots and message logs as evidence, and I am prepared to provide them upon request. I respectfully urge the administration to investigate this matter and take appropriate action to protect individuals from such misconduct.",
+    "closing": "Thank you for taking this matter seriously. I hope for timely intervention to ensure that such behavior is discouraged and that a safe online environment is maintained for all members of our community."
     }
 
 }
