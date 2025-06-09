@@ -1,0 +1,35 @@
+Academic Requests
+
+Registration Extension - Application for Semester Registration Payment Extension and Penalty Waiver
+Leave Request - Application for Leave of Absence
+Retake/Re-evaluation - Application for exam retake/Re-evaluation
+Course Withdrawal/Dropping - Application for course withdrawal
+Change of Course/Section - Application for Change of Course/Section
+Grade Improvement - Application for Grade Improvement
+Late Submission - Application for Late Submission of Assignments/Projects
+
+Administrative Requests
+
+Administrative Requests - General administrative assistance
+Bonafide Certificate - Application for Bonafide Certificate
+Character Certificate - Application for Issuance of Character Certificate
+Transfer Certificate - Application for Issuance of Transfer Certificate
+Name/Date of Birth Correction - Application for Name/Date of Birth Correction in University Records
+ID Card Re-issuance - Application for Re-issuance of ID Card
+Library Card - Application for Library Card Renewal/Lost Library Card
+
+Financial Requests
+
+Financial Assistance - General financial support request
+ICPC Funding - Application for Financial Assistance for ICPC Participation
+IUPC Funding - Application for Financial Assistance for IUPC Participation
+
+Complaint/Safety Reports
+
+Verbal Abuse Report - Complaint Regarding Verbal Abuse on University Campus
+Physical Assault Report - Complaint Regarding Physical Assault on University Campus
+Eve-Teasing Report - Complaint Regarding Eve-Teasing on University Campus
+Conspiracy Report - Complaint Regarding Conspiracy Against Me
+Authority Misuse Complaint - Complaint Regarding Misuse of Authority
+Staff Misconduct Complaint - Complaint Regarding Inappropriate Behavior by University Staff
+Social Media Harassment - Complaint Regarding Social Media Harassment
